@@ -29,6 +29,18 @@ PageApplication {
 
     initialPage: weekPage
 
+    property var weekStart: {
+        var date = new Date()
+        DateUtils.setDayOfWeek(date, 0)
+        return date
+    }
+
+    property var weekEnd: {
+        var date = new Date()
+        DateUtils.setDayOfWeek(date, 6)
+        return date
+    }
+
     property var tasks: [
         [],
         [],
@@ -48,7 +60,7 @@ PageApplication {
     Page {
         id: weekPage
 
-        title: fullSize ? "1/26/14 - 2/1/14" : "Today"
+        title: fullSize ? Qt.formatDate(weekStart) + " - " + Qt.formatDate(weekEnd) : "Today"
 
         rightWidgets: [
             Button {

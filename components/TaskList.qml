@@ -89,6 +89,11 @@ Widget {
                 list[modelIndex][index] = item
                 tasks = list
             }
+
+            onRightClicked: {
+                itemMenu.index = index
+                itemMenu.open(caller)
+            }
         }
 
         opacity: isComplete && isPast && !list.mouseOver && !textField.editing ? 0.3 : 1
@@ -171,5 +176,27 @@ Widget {
 
             textField.text = ""
         }
+    }
+
+    ActionPopover {
+        id: itemMenu
+
+        property int index
+
+        actions: [
+            Action {
+                name: "Delete"
+                style: "danger"
+                onTriggered: {
+                    var globalList = tasks
+                    var list = model
+                    print(itemMenu.index)
+                    list.splice(itemMenu.index, 1)
+                    globalList[modelIndex] = list
+                    tasks = globalList
+                }
+            }
+
+        ]
     }
 }

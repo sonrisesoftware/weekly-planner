@@ -30,6 +30,8 @@ Widget {
     property bool isComplete: ListUtils.filteredCount(model, function(item) { return !item.done }) === 0
     property int modelIndex
 
+    property bool inline
+
     property var model: tasks[modelIndex]
 
     clip: true
@@ -42,6 +44,8 @@ Widget {
         elide: Text.ElideRight
         color: isToday ? theme.primary : theme.textColor
         font.bold: isToday
+        visible: !inline
+        height: visible ? implicitHeight : 0
 
         anchors {
             left: parent.left
@@ -57,12 +61,13 @@ Widget {
             right: parent.right
             top: titleLabel.bottom
             bottom: parent.bottom
-            topMargin: units.gu(1)
+            topMargin: inline ? 0 : units.gu(1)
         }
-        style: isToday ? "primary"
-                       : isPast ? isComplete ? "success"
-                                             : "danger"
-                                : "default"
+        visible: !inline
+        style: inline ? "default" : isToday ? "primary"
+                                            : isPast ? isComplete ? "success"
+                                                                  : "danger"
+                                                     : "default"
     }
 
     ListView {
@@ -72,7 +77,7 @@ Widget {
             right: parent.right
             top: titleLabel.bottom
             bottom: divider.bottom
-            topMargin: units.gu(1)
+            topMargin: inline ? 0 : units.gu(1)
         }
 
         model: list.model
@@ -180,7 +185,6 @@ Widget {
 
     function formatText(text) {
         var regex = /(\d\d?:\d\d\s*(PM|AM|pm|am))/gi
-        print(text.search(regex))
         text = text.replace(regex, "<font color=\"" + theme.success + "\">$1</font>")
         return text
     }

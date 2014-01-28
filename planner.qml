@@ -40,10 +40,14 @@ PageApplication {
         []
     ]
 
+    onTasksChanged: storage.save()
+
+    property bool fullSize: width > units.gu(90) && height > units.gu(60)
+
     Page {
         id: weekPage
 
-        title: "1/26/14 - 2/1/14"
+        title: fullSize ? "1/26/14 - 2/1/14" : "Today"
 
         rightWidgets: [
             Button {
@@ -52,12 +56,22 @@ PageApplication {
             }
         ]
 
+        TaskList {
+            modelIndex: DateUtils.dayOfWeekIndex(date)
+            date: new Date
+
+            visible: !fullSize
+            anchors.fill: parent
+            inline: true
+        }
+
         Grid {
             id: grid
             anchors {
                 fill: parent
                 margins: units.gu(2)
             }
+            visible: fullSize
 
             columns: 4
             spacing: units.gu(2)
@@ -142,9 +156,11 @@ PageApplication {
                 tasks = JSON.parse(storage.get("tasks"))
         }
 
-        Component.onDestruction: {
-            //storage.set("tasks", [])
-            storage.set("tasks", JSON.stringify(tasks))
+        Component.onDestruction: save()
+
+        function save() {
+            if (storage.cache)
+                storage.set("tasks", JSON.stringify(tasks))
         }
     }
 }

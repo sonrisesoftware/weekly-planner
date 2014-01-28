@@ -42,6 +42,7 @@ PageApplication {
 
     onTasksChanged: storage.save()
 
+    navbarSize: fullSize ? "normal" : "small"
     property bool fullSize: width > units.gu(90) && height > units.gu(60)
 
     Page {

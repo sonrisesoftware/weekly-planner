@@ -72,6 +72,7 @@ Widget {
 
     ListView {
         id: listView
+        clip: true
         anchors {
             left: parent.left
             right: parent.right
@@ -106,6 +107,10 @@ Widget {
         Behavior on opacity {
             NumberAnimation { duration: 200 }
         }
+    }
+
+    ScrollBar {
+        flickableItem: listView
     }
 
     Label {

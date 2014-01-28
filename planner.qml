@@ -19,6 +19,7 @@ import QtQuick 2.0
 import "qml-air"
 import "components"
 import "qml-air/dateutils.js" as DateUtils
+import "qml-air/listutils.js" as ListUtils
 
 PageApplication {
     id: app
@@ -167,13 +168,34 @@ PageApplication {
         Component.onCompleted: {
             if (storage.has("tasks"))
                 tasks = JSON.parse(storage.get("tasks"))
+
+            if (storage.has("weekStart") && !DateUtils.datesEqual(weekStart, new Date(storage.get("weekStart")))) {
+                var incompleteTasks = []
+                for (var i = 0; i < tasks.length; i++) {
+                    incompleteTasks = incompleteTasks.concat(ListUtils.filter(tasks[i], function(item) { return !item.done }))
+                }
+                var list = [
+                        [],
+                        [],
+                        [],
+                        [],
+                        [],
+                        [],
+                        [],
+                        []
+                    ]
+                list[7] = incompleteTasks
+                tasks = list
+            }
         }
 
         Component.onDestruction: save()
 
         function save() {
-            if (storage.cache)
+            if (storage.cache) {
+                storage.set("weekStart", weekStart.toJSON())
                 storage.set("tasks", JSON.stringify(tasks))
+            }
         }
     }
 }

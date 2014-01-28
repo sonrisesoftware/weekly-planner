@@ -90,7 +90,32 @@ PageApplication {
             Action {
                 name: "Erase planner"
                 style: "danger"
-                onTriggered: {
+                onTriggered: deleteSheet.open()
+            }
+
+        ]
+    }
+
+    Sheet {
+        id: deleteSheet
+
+        title: "Erase Planner"
+        style: "danger"
+
+        Label {
+            text: "Are you sure your want to erase the planner?"
+        }
+
+        footer: [
+            Button {
+                text: "Cancel"
+                onClicked: deleteSheet.close()
+            },
+
+            Button {
+                text: "Erase"
+                style: "danger"
+                onClicked: {
                     var list = [
                             [],
                             [],
@@ -104,7 +129,6 @@ PageApplication {
                     tasks = list
                 }
             }
-
         ]
     }
 

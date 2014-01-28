@@ -77,10 +77,10 @@ Widget {
 
         model: list.model
         delegate: ListItem.Standard {
-            text: modelData.text
+            text: formatText(modelData.text)
             iconName: modelData.done ? "check-square-o" : "square-o"
             style: !isComplete && isPast && !modelData.done ? "danger" : "default"
-            toolTip: trimmed ? text : ""
+            toolTip: trimmed ? modelData.text : ""
 
             onClicked: {
                 var list = tasks
@@ -176,6 +176,13 @@ Widget {
 
             textField.text = ""
         }
+    }
+
+    function formatText(text) {
+        var regex = /(\d\d?:\d\d\s*(PM|AM|pm|am))/gi
+        print(text.search(regex))
+        text = text.replace(regex, "<font color=\"" + theme.success + "\">$1</font>")
+        return text
     }
 
     ActionPopover {

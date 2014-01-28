@@ -80,6 +80,7 @@ Widget {
             text: modelData.text
             iconName: modelData.done ? "check-square-o" : "square-o"
             style: !isComplete && isPast && !modelData.done ? "danger" : "default"
+            toolTip: trimmed ? text : ""
 
             onClicked: {
                 var list = tasks

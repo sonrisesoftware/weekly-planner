@@ -23,7 +23,7 @@ import "qml-air/listutils.js" as ListUtils
 
 PageApplication {
     id: app
-    title: "Planner"
+    title: "Weekly Planner"
 
     width: units.gu(110)
     height: units.gu(80)

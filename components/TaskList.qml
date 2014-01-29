@@ -23,7 +23,7 @@ import "../qml-air/listutils.js" as ListUtils
 
 Widget {
     id: list
-    property string title: date ? DateUtils.dayOfWeek(date) : "Backlog"
+    property string title: date ? DateUtils.dayOfWeek(date) : "Unassigned"
     property var date
     property bool isToday: date ? DateUtils.isToday(date) : false
     property bool isPast: date ? DateUtils.dateIsBefore(date, DateUtils.today) : false
@@ -82,24 +82,9 @@ Widget {
         }
 
         model: list.model
-        delegate: ListItem.Standard {
-            text: formatText(modelData.text)
-            iconName: modelData.done ? "check-square-o" : "square-o"
-            style: !isComplete && isPast && !modelData.done ? "danger" : "default"
-            toolTip: trimmed ? modelData.text : ""
-
-            onClicked: {
-                var list = tasks
-                var item = modelData
-                item.done = !item.done
-                list[modelIndex][index] = item
-                tasks = list
-            }
-
-            onRightClicked: {
-                itemMenu.index = index
-                itemMenu.open(caller)
-            }
+        delegate: TaskListItem {
+            model: modelData
+            itemIndex: index
         }
 
         opacity: isComplete && isPast && !list.mouseOver && !textField.editing ? 0.3 : 1

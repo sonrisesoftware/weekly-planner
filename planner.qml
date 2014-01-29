@@ -61,7 +61,8 @@ PageApplication {
     Page {
         id: weekPage
 
-        title: fullSize ? Qt.formatDate(weekStart) + " - " + Qt.formatDate(weekEnd) : "Today"
+        title: fullSize ? Qt.formatDate(weekStart) + " - " + Qt.formatDate(weekEnd)
+                        : app.width > units.gu(40) ? "Today - " + DateUtils.dayOfWeek(new Date()) : "Today"
 
         rightWidgets: [
             Button {

@@ -54,6 +54,17 @@ Widget {
         }
     }
 
+    Label {
+        id: dateLabel
+        anchors {
+            right: parent.right
+            bottom: titleLabel.bottom
+        }
+        fontSize: units.gu(1.4)
+        text: Qt.formatDate(list.date)
+        visible: titleLabel.visible
+    }
+
     BackgroundView {
         id: background
         anchors {

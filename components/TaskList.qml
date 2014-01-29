@@ -87,7 +87,7 @@ Widget {
             itemIndex: index
         }
 
-        opacity: isComplete && isPast && !list.mouseOver && !textField.editing ? 0.3 : 1
+        opacity: isComplete && isPast && !list.mouseOver && !textField.editing ? 0.1 : 1
 
         Behavior on opacity {
             NumberAnimation { duration: 200 }
@@ -115,6 +115,15 @@ Widget {
             size: units.gu(4)
             name: "check-circle"
             color: theme.success
+
+            // Adds a white background to the check in the icon
+            Rectangle {
+                anchors.centerIn: parent
+                width: units.gu(3)
+                height: units.gu(3)
+                radius: height/2
+                z:-1
+            }
         }
 
         Label {

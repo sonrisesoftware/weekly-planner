@@ -120,8 +120,12 @@ PageApplication {
                 name: "Erase planner"
                 style: "danger"
                 onTriggered: deleteSheet.open()
-            }
+            },
 
+            Action {
+                name: "About"
+                onTriggered: aboutSheet.open()
+            }
         ]
     }
 
@@ -159,6 +163,18 @@ PageApplication {
                 }
             }
         ]
+    }
+
+    AboutSheet {
+        id: aboutSheet
+
+        icon: Qt.resolvedUrl("planner.png")
+        name: "Weekly Planner"
+        version: "0.1"
+        copyright: "Copyright (C) 2014 Michael Spencer"
+        license: "GPLv3"
+        website: "http://github.com/iBeliever/weekly-planner"
+        reportABug: "https://github.com/iBeliever/weekly-planner/issues/new"
     }
 
     Document {

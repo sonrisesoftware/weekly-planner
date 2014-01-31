@@ -20,6 +20,7 @@ import "qml-air"
 import "components"
 import "qml-air/dateutils.js" as DateUtils
 import "qml-air/listutils.js" as ListUtils
+import "qml-air/ListItems" as ListItem
 
 PageApplication {
     id: app
@@ -61,19 +62,68 @@ PageApplication {
     Page {
         id: weekPage
 
+        property var selectedDate: {
+            var date = new Date()
+            DateUtils.setDayOfWeek(date, selectedDay)
+            return date
+        }
+
+        property int selectedDay: DateUtils.dayOfWeekIndex(new Date())
+
+        property bool isToday: DateUtils.isToday(selectedDate)
+
         title: fullSize ? Qt.formatDate(weekStart) + " - " + Qt.formatDate(weekEnd)
-                        : app.width > units.gu(40) ? "Today - " + DateUtils.dayOfWeek(new Date()) : "Today"
+                        : isToday ? app.width > units.gu(40) ? "Today - " + DateUtils.dayOfWeek(selectedDate) : "Today"
+                                  : DateUtils.dayOfWeek(selectedDate)
 
         rightWidgets: [
             Button {
-                iconName: "cog"
+                iconName: theme.iconSettings
                 onClicked: menu.open(caller)
             }
         ]
 
+        drawer: Drawer {
+            visible: !fullSize
+
+            Column {
+                anchors.fill: parent
+                Repeater {
+                    model: 8
+                    delegate: ListItem.Standard {
+                        height: units.gu(4)
+                        fontSize: "medium"
+                        selected: weekPage.selectedDay === index
+                        onClicked: {
+                            weekPage.drawer.close()
+                            weekPage.selectedDay = index
+                        }
+                        style:  {
+                            var date = new Date()
+                            DateUtils.setDayOfWeek(date, index)
+                            if (DateUtils.isToday(date))
+                                return "primary"
+                            else
+                                return "default"
+                        }
+
+                        text: {
+                            if (index < 7) {
+                                var date = new Date()
+                                DateUtils.setDayOfWeek(date, index)
+                                return DateUtils.dayOfWeek(date)
+                            } else {
+                                return "Uncategoried"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         TaskList {
-            modelIndex: DateUtils.dayOfWeekIndex(date)
-            date: new Date
+            modelIndex: weekPage.selectedDay
+            date: weekPage.selectedDate
 
             visible: !fullSize
             anchors.fill: parent
@@ -149,6 +199,7 @@ PageApplication {
                 text: "Erase"
                 style: "danger"
                 onClicked: {
+                    deleteSheet.close()
                     var list = [
                             [],
                             [],

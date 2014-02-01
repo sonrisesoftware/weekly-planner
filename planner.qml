@@ -232,7 +232,7 @@ PageApplication {
 
         icon: Qt.resolvedUrl("planner.png")
         name: "Weekly Planner"
-        version: "0.1"
+        version: "@APP_VERSION@"
         copyright: "Copyright (C) 2014 Michael Spencer"
         license: "GPLv3"
         website: "http://github.com/iBeliever/weekly-planner"

@@ -1,0 +1,11 @@
+VERSION=$1
+RELEASE_DIR=../releases/weekly-planner/tar-v$VERSION
+
+cp . $RELEASE_DIR -r
+cd $RELEASE_DIR
+replace '@APP_VERSION@' $VERSION planner.qml
+sudo rm .git* -r
+rm qml-air -r
+cp ../../../qml-air . -r
+sudo rm qml-air/.git* -r
+tar -czf ../weekly-planner-$VERSION.tar.gz *

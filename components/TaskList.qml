@@ -246,7 +246,10 @@ Widget {
         height: row.implicitHeight + row.anchors.margins * 2 + units.gu(0.2)
         property int index: -1
 
-        onOpened: editField.forceActiveFocus()
+        onOpened: {
+            editField.forceActiveFocus()
+            editField.text = Qt.binding(function() { return  model[taskPopover.index] === undefined ? "" : model[taskPopover.index].text })
+        }
 
         Row {
             id: row
@@ -261,13 +264,13 @@ Widget {
                     globalList[modelIndex][taskPopover.index].text = editField.text
                     tasks = globalList
                 }
-                text: taskPopover.index === -1 ? "" : model[taskPopover.index].text
             }
             Button {
                 text: "Done"
-                onClicked: editField.trigger()
+                onClicked: editField.triggered()
             }
         }
 
+        Keys.onEscapePressed: taskPopover.close()
     }
 }

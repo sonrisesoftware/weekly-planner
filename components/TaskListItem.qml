@@ -41,7 +41,8 @@ ListItem.BaseListItem {
          }
 
          onClicked: {
-
+             taskPopover.index = index
+             taskPopover.open(listItem)
          }
 
          onPressAndHold: {

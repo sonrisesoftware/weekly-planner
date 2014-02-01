@@ -104,6 +104,16 @@ Widget {
         Behavior on opacity {
             NumberAnimation { duration: 200 }
         }
+
+        Rectangle {
+            id: landingBar
+            color: theme.primary
+            height:2
+            width: parent.width
+            visible: index != -1
+            y: units.gu(3) * index
+            property int index: -1
+        }
     }
 
     ScrollBar {

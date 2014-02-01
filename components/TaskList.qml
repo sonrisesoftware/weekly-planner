@@ -217,6 +217,14 @@ Widget {
 
         actions: [
             Action {
+                name: "Edit"
+                onTriggered: {
+                    taskPopover.index = itemMenu.index
+                    taskPopover.open(itemMenu.caller)
+                }
+            },
+
+            Action {
                 name: "Delete"
                 style: "danger"
                 onTriggered: {
@@ -230,5 +238,36 @@ Widget {
             }
 
         ]
+    }
+
+    Popover {
+        id: taskPopover
+        width: row.implicitWidth + row.anchors.margins * 2 + units.gu(0.2)
+        height: row.implicitHeight + row.anchors.margins * 2 + units.gu(0.2)
+        property int index: -1
+
+        onOpened: editField.forceActiveFocus()
+
+        Row {
+            id: row
+            anchors.fill: parent
+            anchors.margins: units.gu(1)
+            spacing: units.gu(1)
+            TextField {
+                id: editField
+                onTriggered: {
+                    taskPopover.close()
+                    var globalList = tasks
+                    globalList[modelIndex][taskPopover.index].text = editField.text
+                    tasks = globalList
+                }
+                text: taskPopover.index === -1 ? "" : model[taskPopover.index].text
+            }
+            Button {
+                text: "Done"
+                onClicked: editField.trigger()
+            }
+        }
+
     }
 }

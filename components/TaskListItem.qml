@@ -21,58 +21,6 @@ ListItem.BaseListItem {
         itemMenu.open(caller)
     }
 
-    Icon {
-        id: icon
-
-        width: height
-        name: model.done ? "check-square-o" : "square-o"
-        size: listItem.fontSize
-        color: textColor
-
-        mouseEnabled: true
-        onClicked: {
-            var list = tasks
-            model.done = !model.done
-            list[modelIndex][itemIndex] = model
-            tasks = list
-        }
-
-        anchors {
-            left: parent.left
-            leftMargin: margins + (model.done ? 1 : 0)
-            verticalCenter: parent.verticalCenter
-        }
-    }
-
-    Label {
-        id: label
-
-        style: listItem.style
-        color: textColor
-        elide: Text.ElideRight
-        text: formatText(model.text)
-
-        MouseArea {
-            anchors.fill: parent
-            onClicked: textField.forceActiveFocus()
-        }
-        visible: !textField.editing
-
-        anchors {
-            verticalCenter: parent.verticalCenter
-            left: icon.right
-            right: parent.right
-            leftMargin: margins + (model.done ? -1 : 0)
-            rightMargin: margins
-        }
-    }
-
-    opacity: dragArea.held ? 0.5 : 1
-
-    Behavior on opacity {
-        NumberAnimation { duration: 200 }
-    }
-
     MouseArea {
          id: dragArea
          anchors.fill: parent
@@ -92,7 +40,11 @@ ListItem.BaseListItem {
              }
          }
 
-         onPressed: {
+         onClicked: {
+
+         }
+
+         onPressAndHold: {
              print("ON PRESS AND OLD")
              landingBar.index = index
               listItem.z = 2
@@ -138,37 +90,57 @@ ListItem.BaseListItem {
                              listView.interactive = true
                              dragArea.drag.target = null
                         }
+                        var tasksList = tasks
+                        tasksList[modelIndex] = list
+                        tasks = tasksList
                    }
-                   var tasksList = tasks
-                   tasksList[modelIndex] = list
-                   tasks = tasksList
               }
          }
     }
 
-//    Icon {
-//        id: dragItem
-//        width: height
-//        name: "bars"
-//        size: listItem.fontSize
-//        color: textColor
+    Icon {
+        id: icon
 
-//        mouseEnabled: true
-//        //opacity: listItem.mouseOver ? 1 : 0
+        width: height
+        name: model.done ? "check-square-o" : "square-o"
+        size: listItem.fontSize
+        color: textColor
 
-//        Behavior on opacity {
-//            NumberAnimation { duration: 200 }
-//        }
+        mouseEnabled: true
+        onClicked: {
+            var list = tasks
+            model.done = !model.done
+            list[modelIndex][itemIndex] = model
+            tasks = list
+        }
 
-//        anchors {
-//            right: parent.right
-//            rightMargin: margins
-//            //rightMargin: listItem.mouseOver ? margins : -dragItem.width
-//            verticalCenter: parent.verticalCenter
+        anchors {
+            left: parent.left
+            leftMargin: margins + (model.done ? 1 : 0)
+            verticalCenter: parent.verticalCenter
+        }
+    }
 
-//            Behavior on rightMargin {
-//                NumberAnimation { duration: 200 }
-//            }
-//        }
-//    }
+    Label {
+        id: label
+
+        style: listItem.style
+        color: textColor
+        elide: Text.ElideRight
+        text: formatText(model.text)
+
+        anchors {
+            verticalCenter: parent.verticalCenter
+            left: icon.right
+            right: parent.right
+            leftMargin: margins + (model.done ? -1 : 0)
+            rightMargin: margins
+        }
+    }
+
+    opacity: dragArea.held ? 0.5 : 1
+
+    Behavior on opacity {
+        NumberAnimation { duration: 200 }
+    }
 }

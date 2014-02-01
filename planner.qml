@@ -62,6 +62,11 @@ PageApplication {
     navbarSize: fullSize ? "normal" : "small"
     property bool fullSize: width > units.gu(90) && height > units.gu(60)
 
+    onFullSizeChanged: {
+        if (currentOverlay)
+            currentOverlay.close()
+    }
+
     Page {
         id: weekPage
 

@@ -195,7 +195,9 @@ PageApplication {
         style: "danger"
 
         Label {
-            text: "Are you sure your want to erase the planner?"
+            text: "Are you sure your want to erase the planner?<br><b>WARNING:</b> This will destroy all your data!"
+            width: parent.width
+            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
         }
 
         footer: [

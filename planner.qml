@@ -29,6 +29,9 @@ PageApplication {
     width: units.gu(110)
     height: units.gu(80)
 
+    minimumWidth: units.gu(32)
+    minimumHeight: units.gu(45)
+
     initialPage: weekPage
 
     property var weekStart: {
@@ -74,7 +77,7 @@ PageApplication {
 
         title: fullSize ? Qt.formatDate(weekStart) + " - " + Qt.formatDate(weekEnd)
                         : isToday ? app.width > units.gu(40) ? "Today - " + DateUtils.dayOfWeek(selectedDate) : "Today"
-                                  : DateUtils.dayOfWeek(selectedDate)
+                                  : selectedDay === 7 ? "Uncategorized" : DateUtils.dayOfWeek(selectedDate)
 
         rightWidgets: [
             Button {
@@ -84,10 +87,18 @@ PageApplication {
         ]
 
         drawer: Drawer {
-            visible: !fullSize
+            visible: !fullSize && opacity > 0
 
             Column {
                 anchors.fill: parent
+
+                ListItem.Header {
+                    height: units.gu(4)
+                    fontSize: units.gu(2.1)
+                    textColor: "#777"
+                    text: Qt.formatDate(weekStart) + " - " + Qt.formatDate(weekEnd)
+                }
+
                 Repeater {
                     model: 8
                     delegate: ListItem.Standard {
@@ -98,14 +109,7 @@ PageApplication {
                             weekPage.drawer.close()
                             weekPage.selectedDay = index
                         }
-                        style:  {
-                            var date = new Date()
-                            DateUtils.setDayOfWeek(date, index)
-                            if (DateUtils.isToday(date))
-                                return "primary"
-                            else
-                                return "default"
-                        }
+                        style:  grid.children[index].style
 
                         text: {
                             if (index < 7) {
@@ -123,7 +127,7 @@ PageApplication {
 
         TaskList {
             modelIndex: weekPage.selectedDay
-            date: weekPage.selectedDate
+            date: modelIndex === 7 ? undefined : weekPage.selectedDate
 
             visible: !fullSize
             anchors.fill: parent

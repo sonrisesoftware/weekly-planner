@@ -36,6 +36,10 @@ Widget {
 
     clip: true
     color: "transparent"
+    style: inline ? "default" : isToday ? "primary"
+                                        : isPast ? isComplete ? "success"
+                                                              : "danger"
+                                                 : "default"
 
     Label {
         id: titleLabel
@@ -75,10 +79,7 @@ Widget {
             topMargin: inline ? 0 : units.gu(1)
         }
         visible: !inline
-        style: inline ? "default" : isToday ? "primary"
-                                            : isPast ? isComplete ? "success"
-                                                                  : "danger"
-                                                     : "default"
+        style: list.style
     }
 
     ListView {

@@ -11,6 +11,9 @@ ListItem.BaseListItem {
     property bool trimmed: label.implicitWidth > label.width
     style: !isComplete && isPast && !modelData.done ? "danger" : "default"
 
+    color: selected ? background_selected
+                    : mouseOver ? background_mouseOver : dragArea.held ? Qt.rgba(1,1,1,1) : Qt.rgba(0,0,0,0)
+
     toolTip: trimmed ? model.text : ""
 
     onRightClicked: {
@@ -91,11 +94,21 @@ ListItem.BaseListItem {
         color: textColor
 
         mouseEnabled: true
+        //opacity: listItem.mouseOver ? 1 : 0
+
+        Behavior on opacity {
+            NumberAnimation { duration: 200 }
+        }
 
         anchors {
             right: parent.right
             rightMargin: margins
+            //rightMargin: listItem.mouseOver ? margins : -dragItem.width
             verticalCenter: parent.verticalCenter
+
+            Behavior on rightMargin {
+                NumberAnimation { duration: 200 }
+            }
         }
 
         MouseArea {
@@ -111,9 +124,9 @@ ListItem.BaseListItem {
              onPressed: {
                  print("ON PRESS AND OLD")
                   listItem.z = 2
-                  positionStarted = listItem.y
+                  positionStarted = listItem.y + listItem.height/2
                   dragArea.drag.target = listItem
-                  listItem.opacity = 0.5
+                  //listItem.opacity = 0.5
                   listView.interactive = false
                   held = true
                   drag.maximumY = (list.height - listItem.height - 1 + listItem.contentY)
@@ -121,9 +134,12 @@ ListItem.BaseListItem {
              }
 
              onReleased: {
-                  if (Math.abs(positionsMoved) < 1 && held == true) {
-                       listItem.y = positionStarted
-                       listItem.opacity = 1
+                 positionEnded = listItem.y + listItem.height/2
+                 print("RELEASED", positionsMoved)
+                  if ((Math.abs(positionsMoved) < 1 || newPosition >= listView.count) && held == true) {
+                      print("Reseting to original position")
+                       listItem.y = positionStarted - listItem.height/2
+                       //listItem.opacity = 1
                        listView.interactive = true
                        dragArea.drag.target = null
                        held = false

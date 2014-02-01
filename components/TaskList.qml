@@ -22,7 +22,7 @@ import "../qml-air/dateutils.js" as DateUtils
 import "../qml-air/listutils.js" as ListUtils
 
 Widget {
-    id: list
+    id: taskList
     property string title: date ? DateUtils.dayOfWeek(date) : "Unassigned"
     property var date
     property bool isToday: date ? DateUtils.isToday(date) : false
@@ -44,7 +44,7 @@ Widget {
     Label {
         id: titleLabel
         fontSize: "large"
-        text: list.title
+        text: taskList.title
         elide: Text.ElideRight
         color: isToday ? theme.primary : theme.textColor
         font.bold: isToday
@@ -65,7 +65,7 @@ Widget {
             bottom: titleLabel.bottom
         }
         fontSize: units.gu(1.4)
-        text: Qt.formatDate(list.date)
+        text: Qt.formatDate(taskList.date)
         visible: titleLabel.visible
     }
 
@@ -79,7 +79,7 @@ Widget {
             topMargin: inline ? 0 : units.gu(1)
         }
         visible: !inline
-        style: list.style
+        style: taskList.style
     }
 
     ListView {
@@ -93,13 +93,13 @@ Widget {
             topMargin: inline ? 0 : units.gu(1)
         }
 
-        model: list.model
+        model: taskList.model
         delegate: TaskListItem {
             model: modelData
             itemIndex: index
         }
 
-        opacity: isComplete && isPast && !list.mouseOver && !textField.editing ? 0.1 : 1
+        opacity: isComplete && isPast && !taskList.mouseOver && !textField.editing ? 0.1 : 1
 
         Behavior on opacity {
             NumberAnimation { duration: 200 }
@@ -123,14 +123,18 @@ Widget {
     Label {
         anchors.centerIn: listView
         fontSize: units.gu(1.9)
-        text: "Nothing to do!"
-        opacity: listView.count === 0 && !(isComplete && isPast) ? 0.5 : 0
+        text: taskList.isPast ? "Nothing was scheduled" : "Nothing to do!"
+        opacity: taskList.isPast && !taskList.mouseOver ? 0 : listView.count === 0 ? 0.5 : 0
+
+        Behavior on opacity {
+            NumberAnimation { duration: 200 }
+        }
     }
 
     Column {
         anchors.centerIn: background
 
-        opacity: isComplete && isPast && !list.mouseOver && !textField.editing ? 1 : 0
+        opacity: isComplete && isPast && !taskList.mouseOver && !textField.editing ? 1 : 0
 
         Icon {
             anchors.horizontalCenter: parent.horizontalCenter
@@ -225,6 +229,14 @@ Widget {
             },
 
             Action {
+                name: "Move"
+                onTriggered: {
+                    movePopover.index = itemMenu.index
+                    movePopover.open(itemMenu.caller)
+                }
+            },
+
+            Action {
                 name: "Delete"
                 style: "danger"
                 onTriggered: {
@@ -241,8 +253,58 @@ Widget {
     }
 
     Popover {
+        id: movePopover
+
+        property int index
+
+        width: Math.max(units.gu(20), Math.min(implicitWidth, childrenRect.width))
+        height: column.height + units.gu(0.2)
+
+        Column {
+            id: column
+            anchors {
+                left: parent.left
+                right: parent.right
+                top: parent.top
+            }
+
+            ListItem.Header {
+                text: "Move To:"
+            }
+
+            Repeater {
+                id: repeater
+                model: 8
+                delegate: ListItem.Standard {
+                    //height: index !== modelIndex ? implicitHeight : 0
+                    enabled: index !== modelIndex
+                    margins: units.gu(2)
+                    text: {
+                        if (index < 7) {
+                            var date = new Date()
+                            DateUtils.setDayOfWeek(date, index)
+                            return DateUtils.dayOfWeek(date)
+                        } else {
+                            return "Uncategoried"
+                        }
+                    }
+                    onClicked: {
+                        movePopover.close()
+                        var globalList = tasks
+                        var list = taskList.model
+                        globalList[index].push(list[movePopover.index])
+                        list.splice(movePopover.index, 1)
+                        globalList[modelIndex] = list
+                        tasks = globalList
+                    }
+                }
+            }
+        }
+    }
+
+    Popover {
         id: taskPopover
-        width: row.implicitWidth + row.anchors.margins * 2 + units.gu(0.2)
+        implicitWidth: units.gu(40)
         height: row.implicitHeight + row.anchors.margins * 2 + units.gu(0.2)
         property int index: -1
 
@@ -254,10 +316,11 @@ Widget {
         Row {
             id: row
             anchors.fill: parent
-            anchors.margins: units.gu(1)
-            spacing: units.gu(1)
+            anchors.margins: taskPopover.width < taskPopover.implicitWidth ? units.gu(0.7) : units.gu(1)
+            spacing: taskPopover.width < taskPopover.implicitWidth ? units.gu(0.7) : units.gu(1)
             TextField {
                 id: editField
+                width: row.width - doneButton.width - row.spacing
                 onTriggered: {
                     taskPopover.close()
                     var globalList = tasks
@@ -266,6 +329,7 @@ Widget {
                 }
             }
             Button {
+                id: doneButton
                 text: "Done"
                 onClicked: editField.triggered()
             }

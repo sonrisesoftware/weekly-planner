@@ -54,7 +54,7 @@ ListItem.BaseListItem {
               //listItem.opacity = 0.5
               listView.interactive = false
               held = true
-              drag.maximumY = (list.height - listItem.height - 1 + listItem.contentY)
+              drag.maximumY = (taskList.height - listItem.height - 1 + listItem.contentY)
               drag.minimumY = 0
          }
 

@@ -80,6 +80,7 @@ Widget {
         }
         visible: !inline
         style: taskList.style
+        radius: units.gu(0.6)
     }
 
     ListView {
@@ -176,6 +177,18 @@ Widget {
         height: 1
     }
 
+    Item {
+        anchors.fill: textField
+        clip: true
+        Rectangle {
+            anchors {
+                fill: parent
+                topMargin: -units.gu(0.6)
+            }
+            radius: units.gu(0.6)
+        }
+    }
+
     TextField {
         id: textField
         anchors {
@@ -190,7 +203,7 @@ Widget {
             }
         }
 
-        color: "white"
+        color: "transparent"
         radius: 0
 
         placeholderText: "Add task..."

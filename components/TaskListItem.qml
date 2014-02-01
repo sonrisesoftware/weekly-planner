@@ -94,6 +94,7 @@ ListItem.BaseListItem {
 
          onPressed: {
              print("ON PRESS AND OLD")
+             landingBar.index = index
               listItem.z = 2
               positionStarted = listItem.y
               dragArea.drag.target = listItem

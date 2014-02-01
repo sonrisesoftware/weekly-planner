@@ -87,7 +87,7 @@ PageApplication {
         ]
 
         drawer: Drawer {
-            visible: !fullSize && opacity > 0
+            opacity: fullSize ? 0 : 1
 
             Column {
                 anchors.fill: parent

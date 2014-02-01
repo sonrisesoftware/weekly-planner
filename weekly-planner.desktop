@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Weekly Planner
+Comment=Plan your week, as simply as possible
+Exec=qmlscene $@ planner.qml
+Icon=planner.png
+Terminal=false
+Type=Application
+X-Unity-IconBackgroundColor=#428bca

@@ -129,6 +129,7 @@ ListItem.BaseListItem {
         color: textColor
         elide: Text.ElideRight
         text: formatText(model.text)
+        font.bold: model.text.indexOf("!") !== -1 && !model.done
 
         anchors {
             verticalCenter: parent.verticalCenter

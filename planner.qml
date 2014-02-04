@@ -239,10 +239,13 @@ PageApplication {
         name: "planner"
         description: "Planner"
 
+        property bool loaded: false
+
         Component.onCompleted: {
             if (storage.has("tasks"))
                 tasks = JSON.parse(storage.get("tasks"))
 
+            print("WEEK START:", Qt.formatDate(new Date(storage.get("weekStart"))))
             if (storage.has("weekStart") && !DateUtils.datesEqual(weekStart, new Date(storage.get("weekStart")))) {
                 var incompleteTasks = []
                 for (var i = 0; i < tasks.length; i++) {
@@ -261,12 +264,14 @@ PageApplication {
                 list[7] = incompleteTasks
                 tasks = list
             }
+
+            loaded = true
         }
 
         Component.onDestruction: save()
 
         function save() {
-            if (storage.cache) {
+            if (storage.cache && loaded) {
                 storage.set("weekStart", weekStart.toJSON())
                 storage.set("tasks", JSON.stringify(tasks))
             }
